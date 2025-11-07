@@ -1,0 +1,1677 @@
+<!doctype html>
+<html lang="vi">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Prisoner Boxes</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', 'Roboto Condensed', 'Lato', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+      color: #FFFFFF;
+      min-height: 100%;
+      overflow-x: hidden;
+      position: relative;
+      filter: contrast(1.1) saturate(1.2);
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(255,255,255,0.01) 2px,
+          rgba(255,255,255,0.01) 4px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 2px,
+          rgba(0,0,0,0.01) 2px,
+          rgba(0,0,0,0.01) 4px
+        );
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.3;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    /* Vignette effect */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.7) 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Enhanced Smoke effect with multiple layers */
+    .smoke-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 70%, rgba(255,255,255,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse at 50% 20%, rgba(255,255,255,0.02) 0%, transparent 70%),
+        radial-gradient(ellipse at 30% 80%, rgba(255,255,255,0.03) 0%, transparent 50%);
+      animation: smokeFloat 12s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .smoke-overlay::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at 60% 40%, rgba(255,255,255,0.02) 0%, transparent 80%),
+        radial-gradient(ellipse at 10% 60%, rgba(255,255,255,0.025) 0%, transparent 70%);
+      animation: smokeFloat2 15s ease-in-out infinite reverse;
+    }
+
+    @keyframes smokeFloat {
+      0%, 100% { 
+        opacity: 0.4; 
+        transform: translateY(0) translateX(0) scale(1); 
+      }
+      33% { 
+        opacity: 0.6; 
+        transform: translateY(-15px) translateX(10px) scale(1.05); 
+      }
+      66% { 
+        opacity: 0.5; 
+        transform: translateY(-25px) translateX(-5px) scale(0.95); 
+      }
+    }
+
+    @keyframes smokeFloat2 {
+      0%, 100% { 
+        opacity: 0.3; 
+        transform: translateY(0) translateX(0) rotate(0deg); 
+      }
+      50% { 
+        opacity: 0.5; 
+        transform: translateY(-30px) translateX(15px) rotate(2deg); 
+      }
+    }
+
+    /* Enhanced Spotlight effects with multiple beams */
+    .spotlight {
+      position: fixed;
+      width: 180px;
+      height: 500px;
+      background: linear-gradient(to bottom, 
+        rgba(255,255,0,0.15) 0%, 
+        rgba(255,255,0,0.08) 30%,
+        rgba(255,255,0,0.04) 60%,
+        transparent 100%);
+      pointer-events: none;
+      z-index: 3;
+      filter: blur(1px);
+      animation: spotlightSway 6s ease-in-out infinite;
+    }
+
+    .spotlight::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 100%;
+      background: linear-gradient(to bottom, 
+        rgba(255,255,255,0.1) 0%, 
+        rgba(255,255,255,0.05) 40%,
+        transparent 80%);
+      animation: spotlightFlicker 3s ease-in-out infinite;
+    }
+
+    .spotlight-1 {
+      top: -150px;
+      left: 15%;
+      animation-delay: 0s;
+    }
+
+    .spotlight-2 {
+      top: -150px;
+      right: 15%;
+      animation-delay: 3s;
+    }
+
+    .spotlight-3 {
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation-delay: 1.5s;
+      width: 160px;
+    }
+
+    @keyframes spotlightSway {
+      0%, 100% { 
+        transform: rotate(-8deg) translateX(0); 
+        opacity: 0.8;
+      }
+      25% { 
+        transform: rotate(2deg) translateX(10px); 
+        opacity: 1;
+      }
+      50% { 
+        transform: rotate(8deg) translateX(-5px); 
+        opacity: 0.9;
+      }
+      75% { 
+        transform: rotate(-2deg) translateX(8px); 
+        opacity: 1;
+      }
+    }
+
+    @keyframes spotlightFlicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+      75% { opacity: 0.9; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      min-height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* Page 1: Introduction */
+    .page {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease-in-out;
+    }
+
+    .page.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .page.fade-out {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+
+    .locked-case {
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 30px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .lock-wiggle {
+      animation: lockWiggle 1.5s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    @keyframes lockWiggle {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(-2deg) scale(1.02); }
+      50% { transform: rotate(0deg) scale(1); }
+      75% { transform: rotate(2deg) scale(1.02); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .game-title {
+      font-family: 'Bebas Neue', 'Archivo Black', 'Black Ops One', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 900;
+      color: #FF0000;
+      text-shadow: 
+        0 0 5px #FF0000,
+        0 0 10px #FF0000,
+        0 0 20px #FF0000,
+        0 0 40px #FF0000,
+        0 0 80px #FF0000;
+      margin-bottom: 15px;
+      letter-spacing: 3px;
+      animation: neonFlicker 2s ease-in-out infinite alternate;
+      filter: brightness(1.2);
+      text-transform: uppercase;
+    }
+
+    @keyframes neonFlicker {
+      0%, 100% {
+        text-shadow: 
+          0 0 5px #FF0000,
+          0 0 10px #FF0000,
+          0 0 20px #FF0000,
+          0 0 40px #FF0000,
+          0 0 80px #FF0000;
+      }
+      50% {
+        text-shadow: 
+          0 0 2px #FF0000,
+          0 0 5px #FF0000,
+          0 0 8px #FF0000,
+          0 0 12px #FF0000,
+          0 0 20px #FF0000;
+      }
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: #FFFFE0;
+      margin-bottom: 40px;
+      opacity: 0.9;
+    }
+
+    .name-input-section {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 30px;
+    }
+
+    .name-input {
+      width: 100%;
+      padding: 15px 20px;
+      font-size: 1.1rem;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid #B8860B;
+      border-radius: 8px;
+      color: #FFFFFF;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .name-input:focus {
+      outline: none;
+      border-color: #FF0000;
+      box-shadow: 0 0 20px rgba(255,0,0,0.3);
+    }
+
+    .name-input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .start-button {
+      padding: 18px 50px;
+      font-size: 1.3rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #B8860B 0%, #DAA520 100%);
+      color: #1a1a1a;
+      border: 3px solid #FFD700;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      box-shadow: 0 5px 20px rgba(184,134,11,0.4);
+      animation: buttonPulse 2s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .start-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .start-button:hover::before {
+      left: 100%;
+    }
+
+    .start-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(184,134,11,0.6);
+      background: linear-gradient(135deg, #DAA520 0%, #FFD700 100%);
+      animation-play-state: paused;
+    }
+
+    @keyframes buttonPulse {
+      0%, 100% {
+        box-shadow: 0 5px 20px rgba(184,134,11,0.4);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 5px 30px rgba(184,134,11,0.7);
+        transform: scale(1.02);
+      }
+    }
+
+    /* Enhanced popup animations */
+    @keyframes successStomp {
+      0% {
+        transform: scale(0.1) rotate(15deg);
+        opacity: 0;
+      }
+      60% {
+        transform: scale(1.1) rotate(-5deg);
+        opacity: 1;
+      }
+      80% {
+        transform: scale(0.95) rotate(2deg);
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    @keyframes failureGlitch {
+      0% {
+        transform: scale(0.1) rotate(-15deg);
+        opacity: 0;
+        filter: hue-rotate(0deg);
+      }
+      20% {
+        transform: scale(1.05) rotate(5deg);
+        opacity: 1;
+        filter: hue-rotate(90deg);
+      }
+      40% {
+        transform: scale(0.98) rotate(-2deg);
+        filter: hue-rotate(0deg);
+      }
+      60% {
+        transform: scale(1.02) rotate(1deg);
+        filter: hue-rotate(45deg);
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+        filter: hue-rotate(0deg);
+      }
+    }
+
+    @keyframes neonPulse {
+      0%, 100% {
+        text-shadow: 
+          0 0 10px #00FFFF,
+          0 0 20px #00FFFF,
+          0 0 40px #00FFFF,
+          0 0 80px #00FFFF;
+      }
+      50% {
+        text-shadow: 
+          0 0 5px #00FFFF,
+          0 0 10px #00FFFF,
+          0 0 20px #00FFFF,
+          0 0 40px #00FFFF,
+          0 0 100px #00FFFF;
+      }
+    }
+
+    @keyframes glitchFlicker {
+      0%, 100% {
+        text-shadow: 
+          0 0 10px #FF0000,
+          0 0 20px #FF0000,
+          0 0 40px #FF0000;
+        transform: translateX(0);
+      }
+      25% {
+        text-shadow: 
+          0 0 5px #FF0000,
+          0 0 15px #FF0000,
+          0 0 30px #FF0000;
+        transform: translateX(-2px);
+      }
+      50% {
+        text-shadow: 
+          0 0 15px #FF0000,
+          0 0 25px #FF0000,
+          0 0 50px #FF0000;
+        transform: translateX(2px);
+      }
+      75% {
+        text-shadow: 
+          0 0 8px #FF0000,
+          0 0 18px #FF0000,
+          0 0 35px #FF0000;
+        transform: translateX(-1px);
+      }
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(0.3) translateY(50px);
+        opacity: 0;
+      }
+      70% {
+        transform: scale(1.1) translateY(-10px);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 0.7;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes staticNoise {
+      0% { transform: translateX(0) translateY(0); }
+      10% { transform: translateX(-1px) translateY(-1px); }
+      20% { transform: translateX(1px) translateY(1px); }
+      30% { transform: translateX(-1px) translateY(1px); }
+      40% { transform: translateX(1px) translateY(-1px); }
+      50% { transform: translateX(-1px) translateY(-1px); }
+      60% { transform: translateX(1px) translateY(1px); }
+      70% { transform: translateX(-1px) translateY(1px); }
+      80% { transform: translateX(1px) translateY(-1px); }
+      90% { transform: translateX(-1px) translateY(-1px); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 5px 20px rgba(184,134,11,0.5);
+      }
+      50% {
+        transform: scale(1.05);
+        box-shadow: 0 8px 30px rgba(184,134,11,0.8);
+      }
+    }
+
+    /* Page 2: Game Play */
+    .game-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 20px;
+      background: rgba(0,0,0,0.5);
+      border: 2px solid #B8860B;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .manager-info {
+      font-size: 1.1rem;
+      color: #FFFFE0;
+    }
+
+    .timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #FF0000;
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 0 10px rgba(255,0,0,0.5);
+    }
+
+    .story-section {
+      width: 100%;
+      background: rgba(0,0,0,0.6);
+      border: 2px solid #B8860B;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+    }
+
+    .story-title {
+      font-family: 'Bebas Neue', 'Archivo Black', 'Black Ops One', sans-serif;
+      font-size: 1.8rem;
+      color: #00FFFF;
+      text-shadow: 0 0 15px rgba(0,255,255,0.6);
+      margin-bottom: 15px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .story-text {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #FFFFFF;
+      margin-bottom: 15px;
+    }
+
+    .story-text.typewriter {
+      overflow: hidden;
+      border-right: 2px solid #00FFFF;
+      white-space: nowrap;
+      animation: typewriter 3s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typewriter {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: #00FFFF; }
+    }
+
+    .clue-box {
+      background: rgba(255,0,0,0.1);
+      border-left: 4px solid #FF0000;
+      padding: 15px;
+      margin: 20px 0;
+    }
+
+    .clue-title {
+      font-weight: bold;
+      color: #FF0000;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .boxes-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 15px;
+      margin: 30px 0;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .box-item {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+      border: 3px solid #B8860B;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      animation: boxWiggle 4s ease-in-out infinite;
+    }
+
+    .box-item:nth-child(odd) {
+      animation-delay: 0.5s;
+    }
+
+    .box-item:nth-child(even) {
+      animation-delay: 1s;
+    }
+
+    .box-item:hover {
+      transform: translateY(-5px);
+      border-color: #FFD700;
+      box-shadow: 0 10px 30px rgba(184,134,11,0.5);
+      animation-play-state: paused;
+    }
+
+    @keyframes boxWiggle {
+      0%, 100% {
+        transform: rotate(0deg) translateX(0);
+      }
+      25% {
+        transform: rotate(0.5deg) translateX(1px);
+      }
+      50% {
+        transform: rotate(0deg) translateX(0);
+      }
+      75% {
+        transform: rotate(-0.5deg) translateX(-1px);
+      }
+    }
+
+    .box-item.selected {
+      background: linear-gradient(135deg, #B8860B 0%, #DAA520 100%);
+      border-color: #FFD700;
+      box-shadow: 0 0 30px rgba(255,215,0,0.8);
+    }
+
+    .box-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #FFD700;
+      margin-bottom: 5px;
+    }
+
+    .box-label {
+      font-size: 0.8rem;
+      color: #FFFFE0;
+      text-align: center;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .action-button {
+      padding: 12px 30px;
+      font-size: 1rem;
+      font-weight: bold;
+      background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+      color: #FFFFFF;
+      border: 2px solid #FF0000;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+    }
+
+    .action-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(255,0,0,0.5);
+    }
+
+    .action-button.secondary {
+      background: linear-gradient(135deg, #00FFFF 0%, #00CCCC 100%);
+      border-color: #00FFFF;
+    }
+
+    .action-button.secondary:hover {
+      box-shadow: 0 5px 20px rgba(0,255,255,0.5);
+    }
+
+    /* Page 3: Result */
+    .result-container {
+      text-align: center;
+      max-width: 600px;
+      position: relative;
+    }
+
+    /* Confetti Animation */
+    .confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #FFD700;
+      animation: confettiFall 3s linear infinite;
+    }
+
+    .confetti-piece:nth-child(odd) {
+      background: #C0C0C0;
+      border-radius: 50%;
+    }
+
+    .confetti-piece:nth-child(even) {
+      background: #FFD700;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(-100vh) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .success-popup {
+      animation: successStomp 0.8s ease-out;
+    }
+
+    @keyframes successStomp {
+      0% {
+        transform: scale(0.3) rotate(-10deg);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.1) rotate(5deg);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    .result-icon {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto 30px;
+    }
+
+    .result-title {
+      font-family: 'Bebas Neue', 'Archivo Black', 'Black Ops One', sans-serif;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .result-title.success {
+      color: #00FF00;
+      text-shadow: 
+        0 0 5px #00FF00,
+        0 0 10px #00FF00,
+        0 0 20px #00FF00,
+        0 0 40px #00FF00,
+        0 0 80px #00FF00;
+      animation: successGlow 1.5s ease-in-out infinite alternate;
+    }
+
+    .result-title.failure {
+      color: #FF0000;
+      text-shadow: 
+        0 0 5px #FF0000,
+        0 0 10px #FF0000,
+        0 0 20px #FF0000,
+        0 0 40px #FF0000,
+        0 0 80px #FF0000;
+      animation: failureFlicker 0.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes successGlow {
+      0%, 100% {
+        text-shadow: 
+          0 0 5px #00FF00,
+          0 0 10px #00FF00,
+          0 0 20px #00FF00,
+          0 0 40px #00FF00,
+          0 0 80px #00FF00;
+      }
+      50% {
+        text-shadow: 
+          0 0 2px #00FF00,
+          0 0 5px #00FF00,
+          0 0 8px #00FF00,
+          0 0 12px #00FF00,
+          0 0 25px #00FF00;
+      }
+    }
+
+    @keyframes failureFlicker {
+      0%, 100% {
+        text-shadow: 
+          0 0 5px #FF0000,
+          0 0 10px #FF0000,
+          0 0 20px #FF0000,
+          0 0 40px #FF0000,
+          0 0 80px #FF0000;
+      }
+      50% {
+        text-shadow: 
+          0 0 2px #FF0000,
+          0 0 5px #FF0000,
+          0 0 8px #FF0000,
+          0 0 12px #FF0000,
+          0 0 20px #FF0000;
+      }
+    }
+
+    .result-message {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      margin-bottom: 30px;
+      color: #FFFFE0;
+    }
+
+    .explanation-box {
+      background: rgba(0,0,0,0.6);
+      border: 2px solid #B8860B;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 30px;
+      text-align: left;
+    }
+
+    .explanation-title {
+      font-size: 1.5rem;
+      color: #00FFFF;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .explanation-text {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #FFFFFF;
+    }
+
+    /* SVG Icons */
+    .svg-icon {
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (max-width: 768px) {
+      .game-title {
+        font-size: 2.5rem;
+      }
+
+      .story-title {
+        font-size: 1.5rem;
+      }
+
+      .boxes-grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        max-width: 400px;
+      }
+
+      .box-number {
+        font-size: 1.5rem;
+      }
+
+      .box-label {
+        font-size: 0.7rem;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="smoke-overlay"></div>
+  <div class="spotlight spotlight-1"></div>
+  <div class="spotlight spotlight-2"></div>
+  <div class="spotlight spotlight-3"></div>
+  <div class="container"><!-- Page 1: Introduction -->
+   <div class="page active" id="page1">
+    <div class="locked-case">
+     <svg class="svg-icon" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><!-- Flight case --> <rect x="30" y="40" width="140" height="120" fill="#2a2a2a" stroke="#B8860B" stroke-width="3" rx="5" /> <rect x="35" y="45" width="130" height="110" fill="#1a1a1a" stroke="#B8860B" stroke-width="2" /> <!-- Metal corners --> <rect x="25" y="35" width="15" height="15" fill="#B8860B" /> <rect x="160" y="35" width="15" height="15" fill="#B8860B" /> <rect x="25" y="150" width="15" height="15" fill="#B8860B" /> <rect x="160" y="150" width="15" height="15" fill="#B8860B" /> <!-- Lock --> <g class="lock-wiggle">
+       <rect x="90" y="90" width="20" height="30" fill="#FFD700" stroke="#B8860B" stroke-width="2" rx="3" />
+       <circle cx="100" cy="105" r="5" fill="#1a1a1a" />
+      </g> <!-- Chain --> <ellipse cx="70" cy="100" rx="8" ry="12" fill="none" stroke="#888888" stroke-width="3" /> <ellipse cx="85" cy="100" rx="8" ry="12" fill="none" stroke="#888888" stroke-width="3" /> <ellipse cx="115" cy="100" rx="8" ry="12" fill="none" stroke="#888888" stroke-width="3" /> <ellipse cx="130" cy="100" rx="8" ry="12" fill="none" stroke="#888888" stroke-width="3" />
+     </svg>
+    </div>
+    <h1 class="game-title" id="titleText">The Prisoner Boxes</h1>
+    <p class="subtitle" id="subtitleText">Mathletica: Đố vui không thưởng #13</p>
+    <div class="name-input-section"><input type="text" class="name-input" id="playerName" placeholder="Nhập tên của bạn...">
+    </div><button class="start-button" id="startBtn">CHẤP NHẬN THỬ THÁCH</button>
+   </div><!-- Page 2: Game Play -->
+   <div class="page" id="page2">
+    <div class="game-header">
+     <div class="manager-info"><span id="managerLabel">Quản lý</span>: <span id="displayName">Người chơi</span>
+     </div>
+     <div class="timer" id="timer">
+      00:00
+     </div>
+    </div>
+    <div class="story-section">
+     <h2 class="story-title">🎸 Tình Huống Khẩn Cấp</h2>
+     <p class="story-text">Ban nhạc yêu thích của bạn chơi nhạc rất hay, nhưng khâu tổ chức thì cực kỳ tệ. Họ liên tục làm mất nhạc cụ trong chuyến lưu diễn, và điều này khiến người quản lý của họ phát điên.</p>
+     <p class="story-text">Vào ngày diễn ra buổi hòa nhạc lớn, cả ban nhạc (gồm 10 thành viên) tỉnh dậy và thấy mình bị trói trong một phòng tập cách âm, không có cửa sổ. Người quản lý của họ giải thích tình hình:</p>
+     <div class="clue-box">
+      <div class="clue-title">
+       ⚠️ TÌNH HUỐNG KHẨN CẤP:
+      </div>
+      <p class="story-text">"Ở bên ngoài, có 10 chiếc hộp lớn. Mỗi hộp chứa một trong 10 nhạc cụ của các bạn. Nhưng đừng để bị đánh lừa bởi những bức ảnh dán trên đó; chúng đã bị đặt ngẫu nhiên. (Ví dụ: Hộp dán hình 'Cây guitar' có thể chứa 'Bộ trống').<br><br>
+        • Mỗi người chỉ được mở TỐI ĐA 5 hộp<br>
+        • Phải tìm đúng nhạc cụ của chính mình<br>
+        • Không được giao tiếp, đánh dấu hay la hét<br>
+        • NẾU TẤT CẢ 10 người tìm được nhạc cụ → Buổi hòa nhạc được cứu!<br>
+        • NẾU CHỈ MỘT người thất bại → Công ty quản lý sẽ sa thải các bạn!"</p>
+     </div>
+     <p class="story-text">Cả nhóm có 3 phút để suy nghĩ về một chiến lược, trước khi mọi thứ bắt đầu. Ban nhạc cần một chiến lược có cơ hội thành công cao hơn 35%, thay vì dựa vào may rủi (chỉ có 1/1024 cơ hội).</p>
+     <p class="story-text" style="font-weight: bold; color: #00FFFF;">🎯 CHIẾN LƯỢC CỦA BẠN: Thành viên Guitarist đi tìm nhạc cụ. Để chiến lược có cơ hội thành công cao nhất, họ phải mở chiếc hộp nào ĐẦU TIÊN?</p>
+    </div>
+    <div class="boxes-grid" id="boxesGrid"><!-- Boxes will be generated by JavaScript -->
+    </div>
+    <div class="action-buttons"><button class="action-button" id="submitBtn">XÁC NHẬN LỰA CHỌN</button> <button class="action-button secondary" id="resetBtn">CHỌN LẠI</button>
+    </div>
+   </div><!-- Page 3: Result -->
+   <div class="page" id="page3">
+    <div class="result-container">
+     <div class="result-icon" id="resultIcon"></div>
+     <h2 class="result-title" id="resultTitle">Kết Quả</h2>
+     <p class="result-message" id="resultMessage"></p>
+     <div class="explanation-box">
+      <h3 class="explanation-title">💡 Giải Thích Chiến Lược</h3>
+      <div class="explanation-text" id="explanationText"></div>
+     </div>
+     <div class="action-buttons"><button class="action-button" id="playAgainBtn">CHƠI LẠI</button>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      game_title: "The Prisoner Boxes",
+      subtitle: "Mathletica: Đố vui không thưởng #13",
+      start_button: "CHẤP NHẬN THỬ THÁCH",
+      manager_label: "Quản lý",
+      name_placeholder: "Nhập tên của bạn..."
+    };
+
+    let selectedBox = null;
+    let timerInterval = null;
+    let seconds = 0;
+    let playerName = "";
+
+    // Initialize boxes
+    function initializeBoxes() {
+      const grid = document.getElementById('boxesGrid');
+      grid.innerHTML = '';
+      
+      // Create 10 instrument boxes with icons and names
+      const instruments = [
+        { name: 'GUITAR', icon: '🎸', id: 'guitar' },
+        { name: 'TRỐNG', icon: '🥁', id: 'drums' },
+        { name: 'BASS', icon: '🎸', id: 'bass' },
+        { name: 'MICRO', icon: '🎤', id: 'microphone' },
+        { name: 'KEYBOARD', icon: '🎹', id: 'keyboard' },
+        { name: 'SAX', icon: '🎷', id: 'saxophone' },
+        { name: 'VIOLIN', icon: '🎻', id: 'violin' },
+        { name: 'TRUMPET', icon: '🎺', id: 'trumpet' },
+        { name: 'FLUTE', icon: '🪈', id: 'flute' },
+        { name: 'HARMONICA', icon: '🪗', id: 'harmonica' }
+      ];
+      
+      instruments.forEach(instrument => {
+        const box = document.createElement('div');
+        box.className = 'box-item';
+        box.dataset.instrument = instrument.id;
+        box.innerHTML = `
+          <div class="box-number">${instrument.icon}</div>
+          <div class="box-label">Hộp ${instrument.name}</div>
+        `;
+        box.addEventListener('click', () => selectBox(instrument.id, box));
+        grid.appendChild(box);
+      });
+    }
+
+    function selectBox(instrumentId, element) {
+      // Remove previous selection
+      document.querySelectorAll('.box-item').forEach(box => {
+        box.classList.remove('selected');
+      });
+      
+      // Add selection to clicked box
+      element.classList.add('selected');
+      selectedBox = instrumentId;
+    }
+
+    function startTimer() {
+      seconds = 0;
+      timerInterval = setInterval(() => {
+        seconds++;
+        const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const secs = (seconds % 60).toString().padStart(2, '0');
+        document.getElementById('timer').textContent = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+      }
+    }
+
+    function showPage(pageNum) {
+      const currentPage = document.querySelector('.page.active');
+      const targetPage = document.getElementById(`page${pageNum}`);
+      
+      if (currentPage) {
+        currentPage.classList.add('fade-out');
+        setTimeout(() => {
+          currentPage.classList.remove('active', 'fade-out');
+          targetPage.style.display = 'flex';
+          setTimeout(() => {
+            targetPage.classList.add('active');
+            if (pageNum === 2) {
+              startTypewriterEffect();
+            }
+          }, 50);
+        }, 400);
+      } else {
+        targetPage.style.display = 'flex';
+        setTimeout(() => {
+          targetPage.classList.add('active');
+          if (pageNum === 2) {
+            startTypewriterEffect();
+          }
+        }, 50);
+      }
+    }
+
+    function startTypewriterEffect() {
+      // Only animate the emergency situation box content
+      const emergencyContent = document.querySelector('.clue-box .story-text');
+      if (!emergencyContent) return;
+      
+      // Store original content
+      const originalContent = `"Ở bên ngoài, có 10 chiếc hộp lớn. Mỗi hộp chứa một trong 10 nhạc cụ của các bạn. Nhưng đừng để bị đánh lừa bởi những bức ảnh dán trên đó; chúng đã bị đặt ngẫu nhiên. (Ví dụ: Hộp dán hình 'Cây guitar' có thể chứa 'Bộ trống').<br><br>
+            • Mỗi người chỉ được mở TỐI ĐA 5 hộp<br>
+            • Phải tìm đúng nhạc cụ của chính mình<br>
+            • Không được giao tiếp, đánh dấu hay la hét<br>
+            • NẾU TẤT CẢ 10 người tìm được nhạc cụ → Buổi hòa nhạc được cứu!<br>
+            • NẾU CHỈ MỘT người thất bại → Công ty quản lý sẽ sa thải các bạn!"`;
+      
+      // Clear content initially
+      emergencyContent.innerHTML = '';
+      
+      // Start typewriter effect after 1 second
+      setTimeout(() => {
+        let charIndex = 0;
+        const typeInterval = setInterval(() => {
+          emergencyContent.innerHTML = originalContent.substring(0, charIndex + 1);
+          charIndex++;
+          
+          if (charIndex >= originalContent.length) {
+            clearInterval(typeInterval);
+          }
+        }, 30); // Speed: 30ms per character
+      }, 1000);
+    }
+
+    function createEnhancedConfetti() {
+      const confettiContainer = document.createElement('div');
+      confettiContainer.className = 'confetti';
+      
+      // Create multiple waves of confetti
+      for (let wave = 0; wave < 3; wave++) {
+        setTimeout(() => {
+          for (let i = 0; i < 30; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'confetti-piece';
+            
+            // Alternate between gold and silver colors
+            const isGold = Math.random() > 0.5;
+            piece.style.background = isGold ? '#B8860B' : '#C0C0C0';
+            
+            // Random shapes
+            if (Math.random() > 0.5) {
+              piece.style.borderRadius = '50%'; // Circle
+            } else {
+              piece.style.borderRadius = '0'; // Square
+            }
+            
+            // Random sizes
+            const size = Math.random() * 8 + 6; // 6-14px
+            piece.style.width = size + 'px';
+            piece.style.height = size + 'px';
+            
+            // Random positions and timing
+            piece.style.left = Math.random() * 100 + '%';
+            piece.style.animationDelay = Math.random() * 2 + 's';
+            piece.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            
+            // Add metallic shine effect
+            piece.style.boxShadow = `0 0 ${size/2}px rgba(${isGold ? '184,134,11' : '192,192,192'},0.8)`;
+            
+            confettiContainer.appendChild(piece);
+          }
+        }, wave * 500); // Stagger waves
+      }
+      
+      document.body.appendChild(confettiContainer);
+      
+      // Remove after all waves complete
+      setTimeout(() => {
+        confettiContainer.remove();
+      }, 8000);
+    }
+
+    // Keep original function for backward compatibility
+    function createConfetti() {
+      createEnhancedConfetti();
+    }
+
+    function checkAnswer() {
+      const correctAnswer = 'guitar'; // The optimal strategy is to start with the box labeled with your own instrument
+      
+      if (selectedBox === correctAnswer) {
+        // Success - Show success popup
+        showResultPopup(true);
+      } else {
+        // Failure - Show failure popup
+        showResultPopup(false);
+      }
+
+      stopTimer();
+    }
+
+    function showResultPopup(isSuccess) {
+      // Capture current page as background
+      const currentPage = document.getElementById('page2');
+      
+      // Create popup overlay with blurred background
+      const popupOverlay = document.createElement('div');
+      popupOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 200%;
+        backdrop-filter: blur(8px);
+        background: ${isSuccess ? 'rgba(0,0,0,0.6)' : 'rgba(255,0,0,0.3)'};
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: all 0.5s ease;
+      `;
+
+      // Add TV static effect for failure
+      if (!isSuccess) {
+        const staticOverlay = document.createElement('div');
+        staticOverlay.style.cssText = `
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: 
+            repeating-linear-gradient(
+              0deg,
+              transparent,
+              transparent 2px,
+              rgba(255,255,255,0.03) 2px,
+              rgba(255,255,255,0.03) 4px
+            ),
+            repeating-linear-gradient(
+              90deg,
+              transparent,
+              transparent 2px,
+              rgba(0,0,0,0.03) 2px,
+              rgba(0,0,0,0.03) 4px
+            );
+          animation: staticNoise 0.1s linear infinite;
+          pointer-events: none;
+        `;
+        popupOverlay.appendChild(staticOverlay);
+      }
+
+      // Create metallic frame popup
+      const popupContent = document.createElement('div');
+      popupContent.style.cssText = `
+        background: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+        border: 6px solid;
+        border-image: linear-gradient(45deg, 
+          ${isSuccess ? '#B8860B, #FFD700, #B8860B' : '#8B4513, #654321, #8B4513'}
+        ) 1;
+        border-radius: 20px;
+        padding: 50px;
+        text-align: center;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 
+          0 0 50px rgba(${isSuccess ? '184,134,11' : '255,0,0'},0.8),
+          inset 0 0 30px rgba(0,0,0,0.5);
+        transform: scale(0.1) rotate(${isSuccess ? '15deg' : '-15deg'});
+        transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        position: relative;
+        overflow: hidden;
+        animation: ${isSuccess ? 'successStomp' : 'failureGlitch'} 0.8s ease-out;
+      `;
+
+      // Add metallic rivets at corners
+      const rivets = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+      rivets.forEach(position => {
+        const rivet = document.createElement('div');
+        const [vertical, horizontal] = position.split('-');
+        rivet.style.cssText = `
+          position: absolute;
+          ${vertical}: 15px;
+          ${horizontal}: 15px;
+          width: 12px;
+          height: 12px;
+          background: radial-gradient(circle, #FFD700 30%, #B8860B 70%);
+          border-radius: 50%;
+          box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        `;
+        popupContent.appendChild(rivet);
+      });
+
+      if (isSuccess) {
+        // Success popup content with enhanced design
+        popupContent.innerHTML += `
+          <h2 style="
+            font-family: 'Archivo Black', 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            color: #00FFFF;
+            text-shadow: 
+              0 0 10px #00FFFF,
+              0 0 20px #00FFFF,
+              0 0 40px #00FFFF,
+              0 0 80px #00FFFF;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: neonPulse 1.5s ease-in-out infinite alternate;
+          ">BUỔI HÒA NHẠC ĐƯỢC CỨU!</h2>
+          
+          <div style="
+            width: 200px;
+            height: 150px;
+            margin: 0 auto 30px;
+            animation: popIn 0.8s ease-out 0.3s both;
+          ">
+            <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+              <!-- Stage with lights -->
+              <rect x="20" y="100" width="160" height="40" fill="#2a2a2a" stroke="#B8860B" stroke-width="2"/>
+              <!-- Spotlight beams -->
+              <defs>
+                <radialGradient id="spotlight1" cx="50%" cy="0%" r="50%">
+                  <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.8"/>
+                  <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0"/>
+                </radialGradient>
+              </defs>
+              <polygon points="50,10 30,100 70,100" fill="url(#spotlight1)"/>
+              <polygon points="100,5 80,100 120,100" fill="url(#spotlight1)"/>
+              <polygon points="150,10 130,100 170,100" fill="url(#spotlight1)"/>
+              
+              <!-- Band members performing -->
+              <g transform="translate(60,80)">
+                <circle r="12" fill="#FF0000"/>
+                <text y="5" text-anchor="middle" fill="white" font-size="16">🎸</text>
+                <rect x="-8" y="12" width="16" height="20" fill="#1a1a1a"/>
+              </g>
+              <g transform="translate(100,75)">
+                <circle r="12" fill="#00FFFF"/>
+                <text y="5" text-anchor="middle" fill="white" font-size="16">🥁</text>
+                <rect x="-8" y="12" width="16" height="25" fill="#1a1a1a"/>
+              </g>
+              <g transform="translate(140,80)">
+                <circle r="12" fill="#FFD700"/>
+                <text y="5" text-anchor="middle" fill="white" font-size="16">🎤</text>
+                <rect x="-8" y="12" width="16" height="20" fill="#1a1a1a"/>
+              </g>
+              
+              <!-- Crowd -->
+              <circle cx="30" cy="130" r="3" fill="#FFFFFF"/>
+              <circle cx="45" cy="135" r="3" fill="#FFFFFF"/>
+              <circle cx="155" cy="130" r="3" fill="#FFFFFF"/>
+              <circle cx="170" cy="135" r="3" fill="#FFFFFF"/>
+            </svg>
+          </div>
+
+          <div style="
+            font-family: 'Inter', sans-serif;
+            color: #FFFFFF;
+            margin-bottom: 30px;
+            line-height: 1.6;
+          ">
+            <p style="font-size: 1.1rem; margin-bottom: 10px;">
+              <strong>Quản lý:</strong> ${playerName}
+            </p>
+            <p style="font-size: 1.1rem;">
+              <strong>Thời gian:</strong> ${Math.floor(seconds / 60).toString().padStart(2, '0')}:${(seconds % 60).toString().padStart(2, '0')}
+            </p>
+          </div>
+
+          <button id="successContinue" style="
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #B8860B 0%, #FFD700 100%);
+            color: #1a1a1a;
+            border: 3px solid #FFD700;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 5px 20px rgba(184,134,11,0.5);
+          ">CHƠI LẠI</button>
+        `;
+        
+        // Enhanced confetti effect
+        createEnhancedConfetti();
+      } else {
+        // Failure popup content with rusty/cracked frame effect
+        popupContent.style.borderImage = 'linear-gradient(45deg, #8B4513, #654321, #A0522D, #8B4513) 1';
+        
+        popupContent.innerHTML += `
+          <h2 style="
+            font-family: 'Black Ops One', 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            color: #FF0000;
+            text-shadow: 
+              0 0 10px #FF0000,
+              0 0 20px #FF0000,
+              0 0 40px #FF0000;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: glitchFlicker 0.5s ease-in-out infinite alternate;
+          ">BUỔI HÒA NHẠC BỊ HỦY!</h2>
+          
+          <div style="
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 30px;
+            animation: fadeIn 1s ease-out 0.3s both;
+            opacity: 0.7;
+          ">
+            <svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+              <!-- Empty dark stage -->
+              <rect x="20" y="100" width="160" height="40" fill="#1a1a1a" stroke="#654321" stroke-width="2"/>
+              
+              <!-- Broken guitar -->
+              <g transform="translate(100,75)">
+                <!-- Guitar body (broken) -->
+                <ellipse cx="0" cy="0" rx="25" ry="35" fill="#8B4513" stroke="#654321" stroke-width="2"/>
+                <path d="M -20,-10 L 20,10 M -20,10 L 20,-10" stroke="#FF0000" stroke-width="3"/>
+                <!-- Broken neck -->
+                <rect x="-3" y="-35" width="6" height="25" fill="#654321"/>
+                <path d="M -3,-25 L 10,-15" stroke="#FF0000" stroke-width="2"/>
+                <!-- Broken strings -->
+                <path d="M -15,-35 L -10,20 M -5,-35 L 0,20 M 5,-35 L 15,20" 
+                      stroke="#C0C0C0" stroke-width="1" opacity="0.5"/>
+              </g>
+              
+              <!-- Dark empty audience area -->
+              <rect x="10" y="120" width="180" height="25" fill="#0a0a0a" opacity="0.8"/>
+            </svg>
+          </div>
+
+          <p style="
+            font-family: 'Roboto Condensed', sans-serif;
+            font-size: 1.2rem;
+            color: #FFFFE0;
+            margin-bottom: 30px;
+            line-height: 1.6;
+          ">Sai chiến lược rồi, quản lý ơi!</p>
+
+          <button id="failureContinue" style="
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+            color: #FFFFFF;
+            border: 3px solid #FF0000;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 5px 20px rgba(255,0,0,0.5);
+          ">LÀM LẠI</button>
+        `;
+      }
+
+      // Add animations
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+          40% { transform: translateY(-20px); }
+          60% { transform: translateY(-10px); }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          75% { transform: translateX(5px); }
+        }
+      `;
+      document.head.appendChild(style);
+
+      popupOverlay.appendChild(popupContent);
+      document.body.appendChild(popupOverlay);
+
+      // Animate popup in
+      setTimeout(() => {
+        popupOverlay.style.opacity = '1';
+        popupContent.style.transform = 'scale(1) rotate(0deg)';
+      }, 100);
+
+      // Add event listener to continue button
+      const continueBtn = isSuccess ? 
+        document.getElementById('successContinue') : 
+        document.getElementById('failureContinue');
+      
+      continueBtn.addEventListener('click', () => {
+        // Animate popup out
+        popupOverlay.style.opacity = '0';
+        popupContent.style.transform = 'scale(0.3) rotate(10deg)';
+        
+        setTimeout(() => {
+          popupOverlay.remove();
+          style.remove();
+          // Show result page with details
+          showResultPage(isSuccess);
+        }, 300);
+      });
+    }
+
+    function showResultPage(isSuccess) {
+      const resultIcon = document.getElementById('resultIcon');
+      const resultTitle = document.getElementById('resultTitle');
+      const resultMessage = document.getElementById('resultMessage');
+      const explanationText = document.getElementById('explanationText');
+
+      if (isSuccess) {
+        // Success
+        resultTitle.textContent = '🎉 BUỔI HÒA NHẠC ĐƯỢC CỨU!';
+        resultTitle.className = 'result-title success';
+        resultMessage.textContent = `Xuất sắc, ${playerName}! Bạn đã tìm ra chiến lược tối ưu "Đi theo dây chuyền". Ban nhạc sẽ có một đêm diễn lịch sử!`;
+        
+        resultIcon.innerHTML = `
+          <svg class="svg-icon" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+            <!-- Stage -->
+            <rect x="10" y="100" width="130" height="40" fill="#2a2a2a" stroke="#B8860B" stroke-width="2"/>
+            <!-- Spotlights -->
+            <circle cx="30" cy="20" r="8" fill="#FFD700" opacity="0.8"/>
+            <circle cx="75" cy="15" r="8" fill="#FFD700" opacity="0.8"/>
+            <circle cx="120" cy="20" r="8" fill="#FFD700" opacity="0.8"/>
+            <!-- Light beams -->
+            <polygon points="30,28 25,100 35,100" fill="rgba(255,215,0,0.3)"/>
+            <polygon points="75,23 70,100 80,100" fill="rgba(255,215,0,0.3)"/>
+            <polygon points="120,28 115,100 125,100" fill="rgba(255,215,0,0.3)"/>
+            <!-- Band members -->
+            <circle cx="40" cy="90" r="8" fill="#FF0000"/>
+            <rect x="36" y="98" width="8" height="15" fill="#1a1a1a"/>
+            <text x="40" y="88" text-anchor="middle" fill="white" font-size="8">🎸</text>
+            
+            <circle cx="75" cy="85" r="8" fill="#00FFFF"/>
+            <rect x="71" y="93" width="8" height="20" fill="#1a1a1a"/>
+            <text x="75" y="83" text-anchor="middle" fill="white" font-size="8">🥁</text>
+            
+            <circle cx="110" cy="90" r="8" fill="#FFD700"/>
+            <rect x="106" y="98" width="8" height="15" fill="#1a1a1a"/>
+            <text x="110" y="88" text-anchor="middle" fill="white" font-size="8">🎤</text>
+            
+            <!-- Success checkmark -->
+            <circle cx="75" cy="75" r="25" fill="#00FF00" opacity="0.2"/>
+            <path d="M 65 75 L 72 82 L 85 68" fill="none" stroke="#00FF00" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        `;
+
+        explanationText.innerHTML = `
+          <p style="margin-bottom: 15px;"><strong>Chiến lược "Đi theo dây chuyền" (Follow the Chain):</strong></p>
+          <p style="margin-bottom: 10px;">1. <strong>Guitarist</strong> bắt đầu bằng cách mở <strong>Hộp GUITAR</strong> (hộp có nhãn guitar)</p>
+          <p style="margin-bottom: 10px;">2. Xem nhạc cụ bên trong (ví dụ: tìm thấy Trống)</p>
+          <p style="margin-bottom: 10px;">3. Tiếp tục mở <strong>Hộp TRỐNG</strong> (hộp có nhãn trống)</p>
+          <p style="margin-bottom: 10px;">4. Lặp lại cho đến khi tìm thấy Guitar thật sự</p>
+          <p style="margin-bottom: 15px;"><strong>Tại sao chiến lược này hiệu quả?</strong></p>
+          <p style="margin-bottom: 10px;">• Cách sắp xếp ngẫu nhiên của 10 nhạc cụ tạo thành các "dây chuyền" (chains/cycles)</p>
+          <p style="margin-bottom: 10px;">• Nếu không có dây chuyền nào dài hơn 5 bước, tất cả 10 người sẽ thành công</p>
+          <p style="margin-bottom: 10px;">• <strong>Xác suất thành công: khoảng 35%</strong> (so với 1/1024 ≈ 0.1% nếu chọn ngẫu nhiên!)</p>
+          <p style="margin-bottom: 10px;">• Mỗi thành viên khác cũng áp dụng tương tự: Drummer mở Hộp TRỐNG đầu tiên, Bassist mở Hộp BASS đầu tiên...</p>
+          <p style="margin-bottom: 10px;"><strong>Đây là sức mạnh của toán học và chiến lược hợp tác!</strong></p>
+        `;
+      } else {
+        // Failure
+        resultTitle.textContent = '❌ CÔNG TY SA THẢI BAN NHẠC';
+        resultTitle.className = 'result-title failure';
+        resultMessage.textContent = `Tiếc quá, ${playerName}! Chiến lược của bạn không tối ưu. Ban nhạc đã bị sa thải...`;
+        
+        resultIcon.innerHTML = `
+          <svg class="svg-icon" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="75" cy="75" r="70" fill="#FF0000" opacity="0.2"/>
+            <circle cx="75" cy="75" r="60" fill="none" stroke="#FF0000" stroke-width="4"/>
+            <path d="M 50 50 L 100 100 M 100 50 L 50 100" stroke="#FF0000" stroke-width="8" stroke-linecap="round"/>
+            <text x="75" y="130" text-anchor="middle" fill="#FF0000" font-size="20">💔</text>
+          </svg>
+        `;
+
+        explanationText.innerHTML = `
+          <p style="margin-bottom: 15px;"><strong>Chiến lược đúng là "Đi theo dây chuyền" (Follow the Chain):</strong></p>
+          <p style="margin-bottom: 10px;">Guitarist phải mở <strong>HỘP GUITAR</strong> đầu tiên (hộp có nhãn guitar), không phải hộp khác!</p>
+          <p style="margin-bottom: 15px;"><strong>Cách thức hoạt động:</strong></p>
+          <p style="margin-bottom: 10px;">1. Mở Hộp GUITAR → tìm thấy nhạc cụ X (ví dụ: Trống)</p>
+          <p style="margin-bottom: 10px;">2. Mở Hộp TRỐNG → tìm thấy nhạc cụ Y (ví dụ: Bass)</p>
+          <p style="margin-bottom: 10px;">3. Mở Hộp BASS → tìm thấy nhạc cụ Z...</p>
+          <p style="margin-bottom: 10px;">4. Tiếp tục cho đến khi tìm thấy Guitar thật sự</p>
+          <p style="margin-bottom: 15px;"><strong>Tại sao chiến lược này tối ưu?</strong></p>
+          <p style="margin-bottom: 10px;">• Cách sắp xếp ngẫu nhiên tạo thành các "dây chuyền" kín</p>
+          <p style="margin-bottom: 10px;">• Nếu bắt đầu từ nhãn của nhạc cụ mình, bạn sẽ luôn quay về nó trong dây chuyền</p>
+          <p style="margin-bottom: 10px;">• Xác suất thành công tập thể: ~35% (thay vì 0.1% với chiến lược ngẫu nhiên)</p>
+          <p style="margin-bottom: 10px;"><strong>Hãy thử lại và chọn Hộp GUITAR! 🎸</strong></p>
+        `;
+      }
+
+      // Show page 3 immediately without animation
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+        page.style.display = 'none';
+      });
+      
+      const page3 = document.getElementById('page3');
+      page3.style.display = 'flex';
+      page3.classList.add('active');
+    }
+
+    // Event listeners
+    document.getElementById('startBtn').addEventListener('click', () => {
+      const nameInput = document.getElementById('playerName').value.trim();
+      playerName = nameInput || 'Người chơi';
+      document.getElementById('displayName').textContent = playerName;
+      
+      initializeBoxes();
+      showPage(2);
+      startTimer();
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', () => {
+      if (selectedBox === null) {
+        // Create inline message instead of alert
+        const messageDiv = document.createElement('div');
+        messageDiv.style.cssText = 'position: fixed; top: 110%; left: 50%; transform: translate(-50%, -50%); background: rgba(255,0,0,0.95); color: white; padding: 40px 40px; border-radius: 10px; border: 3px solid #FF0000; box-shadow: 0 10px 40px rgba(255,0,0,0.5); z-index: 1000; text-align: center; font-size: 1.2rem;';
+        messageDiv.innerHTML = '⚠️ Vui lòng chọn một chiếc hộp trước!<br><button style="margin-top: 15px; padding: 10px 30px; background: white; color: #FF0000; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;" onclick="this.parentElement.remove()">OK</button>';
+        document.body.appendChild(messageDiv);
+        return;
+      }
+      checkAnswer();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      selectedBox = null;
+      document.querySelectorAll('.box-item').forEach(box => {
+        box.classList.remove('selected');
+      });
+    });
+
+    document.getElementById('playAgainBtn').addEventListener('click', () => {
+      selectedBox = null;
+      
+      // Reset animations
+      const existingConfetti = document.querySelector('.confetti');
+      if (existingConfetti) {
+        existingConfetti.remove();
+      }
+      
+      // Show page 1 immediately without animation
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+        page.style.display = 'none';
+      });
+      
+      const page1 = document.getElementById('page1');
+      page1.style.display = 'flex';
+      page1.classList.add('active');
+      document.getElementById('playerName').value = '';
+    });
+
+    // Element SDK implementation
+    async function onConfigChange(config) {
+      document.getElementById('titleText').textContent = config.game_title || defaultConfig.game_title;
+      document.getElementById('subtitleText').textContent = config.subtitle || defaultConfig.subtitle;
+      document.getElementById('startBtn').textContent = config.start_button || defaultConfig.start_button;
+      document.getElementById('managerLabel').textContent = config.manager_label || defaultConfig.manager_label;
+      document.getElementById('playerName').placeholder = config.name_placeholder || defaultConfig.name_placeholder;
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["game_title", config.game_title || defaultConfig.game_title],
+        ["subtitle", config.subtitle || defaultConfig.subtitle],
+        ["start_button", config.start_button || defaultConfig.start_button],
+        ["manager_label", config.manager_label || defaultConfig.manager_label],
+        ["name_placeholder", config.name_placeholder || defaultConfig.name_placeholder]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: defaultConfig,
+        onConfigChange: onConfigChange,
+        mapToCapabilities: () => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99ae4ca3b7279caa',t:'MTc2MjUzMzkwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
